@@ -1,15 +1,20 @@
 import User from "../models/formDataModel.js";
 import { sendToken } from "../utils/sendToken.js";
+import { createDefaultWellnessGoals } from "../constants/wellnessDefaults.js";
 
 export const register = async (req, res, next) => {
     try {
-        const { username, password } = req.body;
+        const { username, password, role } = req.body;
 
         if (!username || !password) {
             return res.status(400).json({
                 message: "Please provide both username and password",
             });
         }
+
+        const normalizedRole = ['doctor', 'patient'].includes((role || '').toLowerCase())
+            ? role.toLowerCase()
+            : 'patient';
 
         let user = await User.findOne({ username });
 
@@ -22,6 +27,8 @@ export const register = async (req, res, next) => {
         user = await User.create({
             username,
             password,
+            role: normalizedRole,
+            wellnessGoals: createDefaultWellnessGoals(),
         });
 
         return sendToken(res, user, "Account registered and logged in successfully.", 200);
@@ -117,6 +124,107 @@ export const logout = async (req, res, next) => {
         console.error("Logout error:", error.message);
         return res.status(500).json({
             message: "Internal Server Error",
+            error: error.message,
+        });
+    }
+};
+
+export const getWellnessGoals = async (req, res) => {
+    try {
+        if (!req.user.wellnessGoals) {
+            req.user.wellnessGoals = createDefaultWellnessGoals();
+            await req.user.save();
+        }
+
+        res.status(200).json({
+            success: true,
+            wellnessGoals: req.user.wellnessGoals,
+        });
+    } catch (error) {
+        console.error("Get wellness goals error:", error.message);
+        res.status(500).json({
+            message: "Failed to fetch wellness goals",
+            error: error.message,
+        });
+    }
+};
+
+export const updateWellnessGoals = async (req, res) => {
+    try {
+        const { goalKey, values } = req.body;
+
+        if (!goalKey || typeof values !== 'object') {
+            return res.status(400).json({ message: "Invalid payload" });
+        }
+
+        const allowedKeys = ['steps', 'activeMinutes', 'sleep'];
+        if (!allowedKeys.includes(goalKey)) {
+            return res.status(400).json({ message: "Unsupported goal key" });
+        }
+
+        if (!req.user.wellnessGoals) {
+            req.user.wellnessGoals = createDefaultWellnessGoals();
+        }
+
+        req.user.wellnessGoals = {
+            ...req.user.wellnessGoals,
+            [goalKey]: {
+                ...req.user.wellnessGoals[goalKey],
+                ...values,
+            },
+        };
+
+        await req.user.save();
+
+        res.status(200).json({
+            success: true,
+            wellnessGoals: req.user.wellnessGoals,
+        });
+    } catch (error) {
+        console.error("Update wellness goals error:", error.message);
+        res.status(500).json({
+            message: "Failed to update wellness goals",
+            error: error.message,
+        });
+    }
+};
+
+export const addCustomWellnessGoal = async (req, res) => {
+    try {
+        const { title, description, current, target, unit, color } = req.body;
+
+        if (!title) {
+            return res.status(400).json({ message: "Goal title is required." });
+        }
+
+        if (!req.user.wellnessGoals) {
+            req.user.wellnessGoals = createDefaultWellnessGoals();
+        }
+
+        const customGoal = {
+            title,
+            description: description || '',
+            current: Number(current) || 0,
+            target: Number(target) || 0,
+            unit: unit || '',
+            color: color || 'teal',
+        };
+
+        req.user.wellnessGoals.customGoals =
+            Array.isArray(req.user.wellnessGoals.customGoals)
+                ? [...req.user.wellnessGoals.customGoals, customGoal]
+                : [customGoal];
+
+        await req.user.save();
+
+        res.status(201).json({
+            success: true,
+            wellnessGoals: req.user.wellnessGoals,
+        });
+    } catch (error) {
+        console.error("Add custom wellness goal error:", error.message);
+        res.status(500).json({
+            message: "Failed to add custom wellness goal",
             error: error.message,
         });
     }
