@@ -21,6 +21,8 @@ export const sendToken = (res, user, message, statusCode = 200, expire) => {
     const userProfile = {
         _id: user._id,
         username: user.username,
+        role: user.role,
+        wellnessGoals: user.wellnessGoals,
     };
 
     res.status(statusCode).cookie("token", token, options).json({
