@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LayoutDashboard, User, Target, MessageSquare, LogOut, Menu, X, TrendingUp, Clock, Moon, Calendar, Lightbulb, Activity } from 'lucide-react';
-
+import { ShieldCheckIcon } from '@heroicons/react/24/outline';
 const Sidebar = () => {
   const [activeItem, setActiveItem] = useState('Dashboard');
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -42,17 +42,20 @@ const Sidebar = () => {
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-xl font-bold">H</span>
-            </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-              Health
-            </h1>
-          </div>
-          <p className="text-slate-400 text-sm ml-13">Your wellness companion</p>
-        </div>
+<div className="mb-12">
+  <div className="flex items-center gap-4 mb-2">
+    <div className="w-14 h-14 bg-gradient-to-br from-teal-400 to-green-500 rounded-2xl flex items-center justify-center shadow-lg">
+      <ShieldCheckIcon className="w-8 h-8 text-white" />
+    </div>
+
+    <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+      Health
+    </h1>
+  </div>
+
+  <p className="text-slate-400 text-sm ml-14">Your wellness companion</p>
+</div>
+
 
         <nav className="flex-1">
           <ul className="space-y-2">
