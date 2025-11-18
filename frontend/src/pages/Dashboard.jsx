@@ -33,8 +33,6 @@ const Dashboard = () => {
 
         {/* Health Tip of the Day Section */}
         <TipOfTheDay
-          // title="Stay Hydrated!"
-          // tip="Aim to drink at least 8 glasses of water per day. Proper hydration helps maintain energy levels, supports cognitive function, and promotes overall wellness."
         />
         
       </main>
