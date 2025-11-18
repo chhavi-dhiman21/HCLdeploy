@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import Dashboard from './pages/Dashboard';
 import Myprofile from './pages/Myprofile';
+import WellnessGoalsPage from './pages/WellnessGoalsPage';
 import ProtectedRoute from './components/ProtectedRoutes.jsx';
 import PublicRoute from './components/PublicRoute.jsx';
 
@@ -21,6 +22,10 @@ const App = () => {
         <Route
           path="/myprofile"
           element={<ProtectedRoute element={<Myprofile />} />}
+        />
+        <Route
+          path="/wellness-goals"
+          element={<ProtectedRoute element={<WellnessGoalsPage />} />}
         />
       </Routes>
     </Router>

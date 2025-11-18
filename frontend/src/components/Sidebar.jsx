@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, User, Target, MessageSquare, LogOut, Menu, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { logout, user } = useAuth();
   const [activeItem, setActiveItem] = useState('Dashboard');
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -25,13 +26,22 @@ const Sidebar = () => {
 
   const profileInitial = profileName?.charAt(0)?.toUpperCase() || 'H';
 
-  const menuItems = [
+  const menuItems = useMemo(() => [
     { name: 'Dashboard', icon: LayoutDashboard, link: '/dashboard' },
     { name: 'My Profile', icon: User, link: '/myprofile' },
     { name: 'Wellness Goals', icon: Target, link: '/wellness-goals' },
-    { name: 'Messages', icon: MessageSquare, link: '/messages' },
+    // { name: 'Messages', icon: MessageSquare, link: '/messages' },
     { name: 'Logout', icon: LogOut, action: 'logout' },
-  ];
+  ], []);
+
+  useEffect(() => {
+    const current = menuItems.find(
+      (item) => item.link && location.pathname.startsWith(item.link)
+    );
+    if (current && current.name !== activeItem) {
+      setActiveItem(current.name);
+    }
+  }, [location.pathname, menuItems, activeItem]);
 
   return (
     <>
