@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import Sidebar from '../components/Sidebar';
 import PatientProfile from '../components/Patientprofile';
-import DoctorProfile from '../components/DoctorProfile';
+import DoctorProfile from '../components/Doctorprrofile.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 
 const defaultPatientData = {
