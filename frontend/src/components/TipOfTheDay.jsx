@@ -112,7 +112,7 @@ const HealthTipDisplay = () => {
 
 const App = () => {
     return (
-      <div className="min-h-screen bg-slate-950 p-8 font-sans">
+      <div className="min-h-screen font-sans">
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
           .font-sans { font-family: 'Inter', sans-serif; }
