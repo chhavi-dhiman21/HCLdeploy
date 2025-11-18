@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../controllers/authController';
+import { useAuth } from '../context/AuthContext.jsx';
 import { 
   UserIcon, 
   LockClosedIcon, 
@@ -8,6 +10,8 @@ import {
 } from '@heroicons/react/24/outline';
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,12 +26,13 @@ const LoginForm = () => {
 
     try {
       const data = await loginUser(username, password);
+      login(data.user, data.token);
       setSuccess('Login Successful! Redirecting...');
       console.log('Login successful:', data);
-      
-      
-      // setTimeout(() => router.push('/dashboard'), 1000);
 
+      setTimeout(() => {
+        navigate('/dashboard', { replace: true });
+      }, 800);
     } catch (err) {
       setError(err.message);
       console.error('Login Error:', err.message);

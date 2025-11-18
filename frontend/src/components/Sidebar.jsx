@@ -1,16 +1,36 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LayoutDashboard, User, Target, MessageSquare, LogOut, Menu, X } from 'lucide-react';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+  const { logout, user } = useAuth();
   const [activeItem, setActiveItem] = useState('Dashboard');
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+  const profileName = useMemo(() => {
+    if (user?.username) return user.username;
+    try {
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return parsed?.username || 'Member';
+      }
+    } catch (error) {
+      console.error('Failed to parse stored user for sidebar:', error);
+    }
+    return 'Member';
+  }, [user]);
+
+  const profileInitial = profileName?.charAt(0)?.toUpperCase() || 'H';
+
   const menuItems = [
-    { name: 'Dashboard', icon: LayoutDashboard },
-    { name: 'My Profile', icon: User },
-    { name: 'Wellness Goals', icon: Target },
-    { name: 'Messages', icon: MessageSquare },
-    { name: 'Logout', icon: LogOut },
+    { name: 'Dashboard', icon: LayoutDashboard, link: '/dashboard' },
+    { name: 'My Profile', icon: User, link: '/myprofile' },
+    { name: 'Wellness Goals', icon: Target, link: '/wellness-goals' },
+    { name: 'Messages', icon: MessageSquare, link: '/messages' },
+    { name: 'Logout', icon: LogOut, action: 'logout' },
   ];
 
   return (
@@ -67,10 +87,19 @@ const Sidebar = () => {
               
               return (
                 <li key={item.name}>
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (item.action === 'logout') {
+                        logout();
+                        setActiveItem('Dashboard');
+                        setIsMobileOpen(false);
+                        navigate('/', { replace: true });
+                        return;
+                      }
+                      if (item.link) {
+                        navigate(item.link);
+                      }
                       setActiveItem(item.name);
                       setIsMobileOpen(false);
                     }}
@@ -96,7 +125,7 @@ const Sidebar = () => {
                     `}>
                       {item.name}
                     </span>
-                  </a>
+                  </button>
                 </li>
               );
             })}
@@ -108,7 +137,7 @@ const Sidebar = () => {
           <div className="flex items-center gap-3 mb-2">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full" />
             <div className="flex-1">
-              <p className="text-sm font-semibold text-white">John Doe</p>
+              <p className="text-sm font-semibold text-white">{profileName}</p>
               <p className="text-xs text-slate-400">Premium Member</p>
             </div>
           </div>

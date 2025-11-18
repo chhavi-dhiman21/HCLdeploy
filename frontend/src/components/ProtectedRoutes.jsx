@@ -6,8 +6,9 @@ import { useAuth } from '../context/AuthContext.jsx';
 
 const ProtectedRoute = ({ element }) => {
   const { isAuthenticated } = useAuth(); 
+  const hasToken = !!localStorage.getItem('token');
 
-  if (isAuthenticated) {
+  if (isAuthenticated || hasToken) {
     return element;
   }
   

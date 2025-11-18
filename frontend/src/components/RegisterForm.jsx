@@ -10,6 +10,7 @@ import {
 const RegisterForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('patient');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -21,11 +22,12 @@ const RegisterForm = () => {
     setSuccess(null);
 
     try {
-      const data = await registerUser(username, password);
+      const data = await registerUser(username, password, role);
       setSuccess('Registration Successful! Please log in.');
       console.log('Registration successful:', data);
       setUsername('');
       setPassword('');
+      setRole('patient');
     } catch (err) {
       setError(err.message);
       console.error('Registration Error:', err.message);
@@ -79,6 +81,36 @@ const RegisterForm = () => {
                 required
                 className="w-full pl-10 pr-3 py-3 bg-[#0a1628] border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400"
               />
+            </div>
+          </div>
+
+          {/* Role Selection */}
+          <div className="mb-6">
+            <p className="block text-sm font-medium text-gray-300 mb-3">
+              Registering as
+            </p>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { label: 'Patient', value: 'patient', helper: 'Track your wellness journey' },
+                { label: 'Doctor', value: 'doctor', helper: 'Manage and guide patients' },
+              ].map((option) => {
+                const isActive = role === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => setRole(option.value)}
+                    className={`p-4 rounded-xl border transition-all text-left ${
+                      isActive
+                        ? 'border-teal-400 bg-teal-400/10 shadow-lg shadow-teal-500/20'
+                        : 'border-gray-700 hover:border-teal-400/60 hover:bg-white/5'
+                    }`}
+                  >
+                    <p className="text-white font-semibold">{option.label}</p>
+                    <p className="text-xs text-gray-400 mt-1">{option.helper}</p>
+                  </button>
+                );
+              })}
             </div>
           </div>
 

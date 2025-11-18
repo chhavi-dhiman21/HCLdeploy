@@ -20,11 +20,12 @@ export const loginUser = async (username, password) => {
   }
 };
 
-export const registerUser = async (username, password) => {
+export const registerUser = async (username, password, role) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/register`, {
       username,
       password,
+      role,
     });
     return response.data;
   } catch (error) {
