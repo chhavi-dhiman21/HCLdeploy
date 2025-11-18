@@ -25,7 +25,7 @@ const LoginForm = () => {
       setSuccess('Login Successful! Redirecting...');
       console.log('Login successful:', data);
       
-      // You would typically redirect here, e.g.:
+      
       // setTimeout(() => router.push('/dashboard'), 1000);
 
     } catch (err) {
@@ -72,7 +72,7 @@ const LoginForm = () => {
               id="username"
               placeholder="Username"
               value={username}
-              onChange={(e) => setUsername(e.targe.value)}
+              onChange={(e) => setUsername(e.target.value)}
               required
               className="w-full pl-10 pr-3 py-3 bg-[#0a1628] border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400"
             />
