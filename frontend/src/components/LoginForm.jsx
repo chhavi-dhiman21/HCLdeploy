@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { loginUser } from '../controllers/authController';
 
 const LoginForm = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -15,11 +15,11 @@ const LoginForm = () => {
     setSuccess(null);
 
     try {
-      const data = await loginUser(email, password);
-      
+      const data = await loginUser(username, password);
+
       setSuccess('Login Successful! Redirecting...');
       console.log('Login successful:', data);
-      
+
     } catch (err) {
       setError(err.message);
       console.error('Login Error:', err.message);
@@ -47,10 +47,9 @@ const LoginForm = () => {
 
       <div className="mb-4">
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           required
           className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
